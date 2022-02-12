@@ -35,10 +35,14 @@ class MainActivity : AppCompatActivity() {
         val lembreteDao = lembreteDb.lembreteDao()
 
         activityMainBinding.salvarBt.setOnClickListener{
-            val texto = activityMainBinding.lembreteEt.text.toString()
-            lembreteDao.insertLembrete(Lembrete(texto))
-            lembretesList.add(texto)
-            lembretesAdapter.notifyDataSetChanged()
+            Thread {
+                val texto = activityMainBinding.lembreteEt.text.toString()
+                lembreteDao.insertLembrete(Lembrete(texto))
+                runOnUiThread{ //Para utilizar thread que interage com o usuário
+                    lembretesList.add(texto)
+                    lembretesAdapter.notifyDataSetChanged()
+                }
+            }.start()
         }
 
         // Thread filha. Não é principal (concorrente)
